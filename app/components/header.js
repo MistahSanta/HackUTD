@@ -3,7 +3,7 @@ import toyotalogo from "public/toyotalogo.png";
 import { BiSolidUserCircle } from "react-icons/bi";
 function header() {
   return (
-    <main className="flex justify-between ">
+    <main className="flex justify-between bg-tyt_bg py-2 px-4 shadow-md">
       <div className="flex">
         <img
           src="/toyotalogo.png"
