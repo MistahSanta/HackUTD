@@ -1,44 +1,53 @@
 "use client";
 import { BsFillPlayCircleFill, BsFillPauseCircleFill } from "react-icons/bs";
 import { RiSkipLeftFill, RiSkipRightFill } from "react-icons/ri";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { SongByEmotion } from "../Data/Song.js";
 
 export default function Playbar() {
   const [musicInfor, setMusicInfor] = useState(SongByEmotion["sad"]);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const audioRef = useRef(null);
+
+  useEffect( () => { setIsMounted(true); }, [] );
+
+  if (!isMounted) return null;
+  
+
+  const playAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.load();
+      audioRef.current.play();
+    }
+  }
 
   function handlePlay() {
     if (!isPlaying) {
       audioRef.current.play();
     } else {
-      audioRef.current.pause();
+      audioRef.current.pause()
     }
     setIsPlaying(!isPlaying);
+    
   }
 
-  function handlePause() {
-    audioRef.current.pause();
-    setIsPlaying(false);
-  }
 
   function handleSkipBackward() {
     if (currentSongIndex > 0) {
-      setCurrentSongIndex(currentSongIndex - 1);
-      audioRef.current.load();
-      audioRef.current.play();
+      setCurrentSongIndex( currentSongIndex - 1 );
+      playAudio();
     }
   }
 
   function handleSkipForward() {
     if (currentSongIndex < musicInfor.length - 1) {
       setCurrentSongIndex(currentSongIndex + 1);
-      audioRef.current.load();
-      audioRef.current.play();
+      playAudio();
     }
   }
+
 
   return (
     <main className="flex flex-col w-[40vw] justify-center items-center">
@@ -58,7 +67,7 @@ export default function Playbar() {
           <BsFillPauseCircleFill
             size={70}
             className="hover:cursor-pointer"
-            onClick={handlePause}
+            onClick={handlePlay}
           />
         )}
         <RiSkipRightFill
@@ -66,12 +75,12 @@ export default function Playbar() {
           className="hover:cursor-pointer"
           onClick={handleSkipForward}
         />
-      </div>
-      <audio
-        ref={audioRef}
-        src={musicInfor[currentSongIndex].url}
-        onEnded={handleSkipForward}
-      />
+        </div>
+      
+      <audio ref={audioRef} controls>
+      <source src={`${musicInfor[currentSongIndex].url}`} type="audio/mpeg" />
+
+      </audio>
     </main>
   );
 }
