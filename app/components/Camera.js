@@ -1,71 +1,66 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { BsCamera } from "react-icons/bs";
 import { IoMdCloseCircle } from "react-icons/io";
-import Webcam from "react-webcam";
+import { EmotionContext } from "../Context/MotionContext";
 
 function Camera() {
   const [cameraOn, setCameraOn] = useState(false);
-  const webcamRef = useRef(null);
+  const { emotion, setEmotion } = useContext(EmotionContext);
 
-  const videoConstraints = {
-    width: 500,
-    height: 220,
-    facingMode: "user",
-  };
+  const videoRef = useRef(null);
 
   const startCamera = async () => {
     setCameraOn(true);
-    console.log("webcamRef.current: " + webcamRef.current);
-    if (webcamRef.current) {
-      setTimeout(async () => {
-        const processFrame = async () => {
-          const screenshot = webcamRef.current.getScreenshot();
 
-          if (screenshot) {
-            const formData = new FormData();
-            formData.append("screenshot", screenshot);
+    const sendFrameToBackend = async (frame) => {
+      const formData = new FormData();
+      formData.append("screenshot", frame);
 
-            try {
-              const response = await fetch("http://127.0.0.1:5000/analyze", {
-                method: "POST",
-                body: formData,
-              });
-              const data = await response.json();
-              console.log(data);
+      try {
+        const response = await fetch("http://127.0.0.1:5000/analyze", {
+          method: "POST",
+          body: formData,
+        });
 
-              // Update UI with the emotion data (data.final_prediction)
-            } catch (error) {
-              console.error("Error:", error);
-            }
-          }
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data);
+          setEmotion(data.final_prediction);
+        } else {
+          console.error("Error:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
 
-          // Continue processing frames as long as the camera is on
-          if (cameraOn) {
-            requestAnimationFrame(processFrame);
-          }
-        };
+    const processFrame = async () => {
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
 
-        requestAnimationFrame(processFrame);
-      }, 1000); // Add a 1 second delay before capturing the first screenshot
-    }
+      if (videoRef.current) {
+        canvas.width = videoRef.current.videoWidth;
+        canvas.height = videoRef.current.videoHeight;
+        context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+        const dataURL = canvas.toDataURL("image/jpeg");
+
+        await sendFrameToBackend(dataURL);
+
+        // Continue processing frames as long as the camera is on
+        if (cameraOn) {
+          requestAnimationFrame(processFrame);
+        }
+      }
+    };
+
+    requestAnimationFrame(processFrame);
   };
 
   const stopCamera = () => {
     setCameraOn(false);
-    if (webcamRef.current) {
-      const videoStream = webcamRef.current.video.srcObject;
-      if (videoStream) {
-        videoStream.getTracks().forEach((track) => track.stop());
-      }
-    }
+    setEmotion("");
   };
-
-  useEffect(() => {
-    return () => {
-      stopCamera(); // This will be called when the component is unmounted
-    };
-  }, []);
 
   return (
     <div>
@@ -73,21 +68,20 @@ function Camera() {
         <BsCamera size={"40px"} onClick={startCamera} />
       ) : (
         <div className="flex flex-col gap-5">
-          <Webcam
-            audio={false}
-            height={220}
-            screenshotFormat="image/jpeg"
-            width={550}
-            videoConstraints={videoConstraints}
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            width={5}
+            height={5}
             onUserMediaError={(error) => console.log("Webcam error: ", error)}
-            ref={webcamRef}
           />
           <div className="flex gap-5 mx-auto">
             <IoMdCloseCircle size={"40px"} onClick={stopCamera} />
-            <h2> Your emotion: </h2>
           </div>
         </div>
       )}
+      <h2 className="text-[1.5rem] mt-5"> Your emotion today: {emotion} </h2>
     </div>
   );
 }
