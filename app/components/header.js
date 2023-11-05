@@ -3,14 +3,14 @@ import toyotalogo from "public/toyotalogo.png";
 import { BiSolidUserCircle } from "react-icons/bi";
 function header() {
   return (
-    <main className="flex justify-between bg-tyt_bg py-2 px-4 shadow-md">
+    <main className="flex justify-between bg-tyt_bg py-2 px-4 shadow-md w-[100%]">
       <div className="flex">
         <img
           src="/toyotalogo.png"
           alt="Toyota Logo"
           className="w-[150px] h-[70px] md:w-[200px] md:h-[100px]"
         />
-        <h1 className="text-[1.5rem] md:text-[2rem] mt-6 md:mt-8 font-bold">
+        <h1 className="text-[1.5rem] md:text-[2rem] mt-6 md:mt-8 font-bold text-tyt_red">
           MoodTunes
         </h1>
       </div>
