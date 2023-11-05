@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Header from "./components/header";
 import Playlist from "./components/playlist";
-import Playbar from "./components/playbar";
+import Playbar from "./components/Playbar";
 export default function Home() {
   return (
     <main className=" h-[100vh] flex flex-col justify-center items-center">
