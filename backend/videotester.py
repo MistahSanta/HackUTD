@@ -15,10 +15,11 @@ model = load_model("best_model.h5")
 
 face_haar_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
+pre_emotions = []
 
 cap = cv2.VideoCapture(0)
 
-while True:
+while len(pre_emotions) < 20:
     ret, test_img = cap.read()  # captures frame and returns boolean value and captured image
     if not ret:
         continue
@@ -41,14 +42,25 @@ while True:
 
         emotions = ('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
         predicted_emotion = emotions[max_index]
+        
+        pre_emotions.append(predicted_emotion)
 
         cv2.putText(test_img, predicted_emotion, (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
     resized_img = cv2.resize(test_img, (1000, 700))
     cv2.imshow('Facial emotion analysis ', resized_img)
 
+    
+
     if cv2.waitKey(100) == ord('q'):  # wait until 'q' key is pressed
         break
 
+if len(pre_emotions) > 0:
+   final_prediction = max(set(pre_emotions), key=pre_emotions.count)
+else:
+   final_prediction = "Unknown"
+
+print("Final Prediction:", final_prediction)
+
 cap.release()
-cv2.destroyAllWindows
+cv2.destroyAllWindows()
