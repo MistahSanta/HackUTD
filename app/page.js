@@ -1,18 +1,25 @@
-import Image from "next/image";
+
 import Header from "./components/header";
 import Playlist from "./components/Playlist";
 import Playbar from "./components/Playbar";
+import {Ubuntu} from 'next/font/google';
+const inter = Ubuntu({ subsets: ['latin'], weight: '400' } );
+
+
 export default function Home() {
   return (
-    <main className=" h-[100vh] flex flex-col justify-center items-center">
-      <Header />
-      <div className="flex justify-center items-center flex-grow">
-        <Playlist />
-      </div>
-      <footer className="flex flex-col h-[12vh] w-full bottom-0 absolute left-0 justify-center items-center bg-tyt_bg">
-        <Playbar />
-      </footer>
+    <main className={inter.className}>
+      <main className=" h-[100vh] flex flex-col justify-center">
+        <Header />
+        <div className="flex flex-col justify-center items-center flex-grow ">
+          <div className="bg-tyt_bg w-[80vw] h-[100vw] md:w-[65vw] md:h-[60vh] no-scrollbar rounded-xl shadow-lg ">
+            <Playlist />
+            <Playbar />
+          </div>
+        </div>
 
+
+      </main>
     </main>
   );
 }

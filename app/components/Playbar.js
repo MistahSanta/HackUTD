@@ -72,7 +72,7 @@ export default function Playbar() {
   }, [] );
 
   return (
-    <main className="flex flex-col w-[40vw] justify-center items-center">
+    <main className="flex flex-col w-[40vw] justify-center items-center my-4 bg-tyt_bg mx-auto">
       <div className="flex relative w-[30vw] h-[20vh] lg:w-[12vw] lg:h-[10vh] justify-between items-center">
         <RiSkipLeftFill
           size={50}
