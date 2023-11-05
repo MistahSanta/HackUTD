@@ -7,14 +7,12 @@ import { SongByEmotion } from "../Data/Song.js";
 export default function Playbar() {
   const [musicInfor, setMusicInfor] = useState(SongByEmotion["sad"]);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [curTime, setCurTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
   const audioRef = useRef(null);
+  const progressbarRef = useRef(null);
 
-  useEffect( () => { setIsMounted(true); }, [] );
-
-  if (!isMounted) return null;
-  
 
   const playAudio = () => {
     if (audioRef.current) {
@@ -22,6 +20,23 @@ export default function Playbar() {
       audioRef.current.play();
     }
   }
+
+  const handleTimeUpdate = () => {
+    setCurTime(audioRef.current.currentTime);
+  }
+
+  const handleloadedData = () => {
+    setDuration(audioRef.current.duration);
+  }
+
+
+  const handleProgressBarClick = (e) => {
+    const rect = progressbarRef.current.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const newTime = (offsetX / rect.width) * duration;
+    audioRef.current.currentTime = newTime;
+    setCurTime(newTime);
+  };
 
   function handlePlay() {
     if (!isPlaying) {
@@ -47,7 +62,14 @@ export default function Playbar() {
       playAudio();
     }
   }
-
+  useEffect( () => { 
+    audioRef.current.addEventListener('timeupdate', handleTimeUpdate);
+    audioRef.current.addEventListener('loadeddata', handleloadedData);
+    // return () => {
+    //   audioRef.current.removeEventListener('timeupdate', handleTimeUpdate);
+    //   audioRef.current.removeEventListener('loadeddata', handleloadedData);
+    // };
+  }, [] );
 
   return (
     <main className="flex flex-col w-[40vw] justify-center items-center">
@@ -60,13 +82,13 @@ export default function Playbar() {
         {!isPlaying ? (
           <BsFillPlayCircleFill
             size={70}
-            className="hover:cursor-pointer"
+            className="hover:cursor-pointer bg-tyt_red rounded-full"
             onClick={handlePlay}
           />
         ) : (
           <BsFillPauseCircleFill
             size={70}
-            className="hover:cursor-pointer"
+            className="hover:cursor-pointer bg-tyt_red rounded-full"
             onClick={handlePlay}
           />
         )}
@@ -76,11 +98,33 @@ export default function Playbar() {
           onClick={handleSkipForward}
         />
         </div>
+
+
+
       
-      <audio ref={audioRef} controls>
+      <audio ref={audioRef} >
       <source src={`${musicInfor[currentSongIndex].url}`} type="audio/mpeg" />
 
       </audio>
+
+      <div ref={progressbarRef}
+              onClick={handleProgressBarClick}
+              style={{ width: '100%', backgroundColor: 'lightgray', borderRadius: '10px' }}
+      >
+        {console.log(curTime)}
+          <div 
+            style={{
+              width: `${(curTime / duration) * 100}%`,
+              height: '10px',
+              backgroundColor: 'red',
+              borderRadius: '10px'
+            }}>
+          </div>
+
+        </div>
+
+
+
     </main>
   );
 }
