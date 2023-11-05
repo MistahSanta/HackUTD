@@ -13,6 +13,9 @@ export default function Playbar() {
   const audioRef = useRef(null);
   const progressbarRef = useRef(null);
 
+  const selectMusic = () => {
+    
+  }
 
   const playAudio = () => {
     if (audioRef.current) {
@@ -76,7 +79,7 @@ export default function Playbar() {
       <div className="flex relative w-[30vw] h-[20vh] lg:w-[12vw] lg:h-[10vh] justify-between items-center">
         <RiSkipLeftFill
           size={50}
-          className="hover:cursor-pointer"
+          className="hover:cursor-pointer hover:bg-slate-300 rounded-full"
           onClick={handleSkipBackward}
         />
         {!isPlaying ? (
@@ -94,7 +97,7 @@ export default function Playbar() {
         )}
         <RiSkipRightFill
           size={50}
-          className="hover:cursor-pointer"
+          className="hover:cursor-pointer hover:bg-slate-300 rounded-full"
           onClick={handleSkipForward}
         />
         </div>
@@ -109,6 +112,7 @@ export default function Playbar() {
 
       <div ref={progressbarRef}
               onClick={handleProgressBarClick}
+              className="hover:cursor-pointer"
               style={{ width: '100%', backgroundColor: 'lightgray', borderRadius: '10px' }}
       >
         {console.log(curTime)}
@@ -117,7 +121,7 @@ export default function Playbar() {
               width: `${(curTime / duration) * 100}%`,
               height: '10px',
               backgroundColor: 'red',
-              borderRadius: '10px'
+              borderRadius: '10px',
             }}>
           </div>
 
