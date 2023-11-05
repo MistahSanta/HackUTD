@@ -2,16 +2,19 @@ import Image from "next/image";
 import Header from "./components/header";
 import Playlist from "./components/Playlist";
 import Playbar from "./components/Playbar";
+import Camera from "./components/Camera";
+
 export default function Home() {
   return (
-    <main className=" h-[100vh] flex flex-col justify-center items-center">
+    <div className="flex flex-col h-screen">
       <Header />
-      <div className="flex justify-center items-center flex-grow">
+      <div className="flex flex-col gap-4 flex-grow justify-center items-center mt-[2em]">
+        <Camera />
         <Playlist />
       </div>
-      <footer className="flex flex-col h-[12vh] w-full bottom-0 absolute left-0 justify-center items-center bg-tyt_bg">
+      <footer className="flex h-12 justify-center items-center bg-tyt_bg">
         <Playbar />
       </footer>
-    </main>
+    </div>
   );
 }
