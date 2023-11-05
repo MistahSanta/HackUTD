@@ -1,12 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BsCamera } from "react-icons/bs";
 import { IoMdCloseCircle } from "react-icons/io";
 import Webcam from "react-webcam";
 
 function Camera() {
   const [cameraOn, setCameraOn] = useState(false);
-  const [webcamRef, setWebcamRef] = useState(null);
+  const webcamRef = useRef(null);
 
   const videoConstraints = {
     width: 500,
@@ -14,14 +14,47 @@ function Camera() {
     facingMode: "user",
   };
 
-  const startCamera = () => {
+  const startCamera = async () => {
     setCameraOn(true);
+    console.log("webcamRef.current: " + webcamRef.current);
+    if (webcamRef.current) {
+      setTimeout(async () => {
+        const processFrame = async () => {
+          const screenshot = webcamRef.current.getScreenshot();
+
+          if (screenshot) {
+            const formData = new FormData();
+            formData.append("screenshot", screenshot);
+
+            try {
+              const response = await fetch("http://127.0.0.1:5000/analyze", {
+                method: "POST",
+                body: formData,
+              });
+              const data = await response.json();
+              console.log(data);
+
+              // Update UI with the emotion data (data.final_prediction)
+            } catch (error) {
+              console.error("Error:", error);
+            }
+          }
+
+          // Continue processing frames as long as the camera is on
+          if (cameraOn) {
+            requestAnimationFrame(processFrame);
+          }
+        };
+
+        requestAnimationFrame(processFrame);
+      }, 1000); // Add a 1 second delay before capturing the first screenshot
+    }
   };
 
   const stopCamera = () => {
     setCameraOn(false);
-    if (webcamRef) {
-      const videoStream = webcamRef.video.srcObject;
+    if (webcamRef.current) {
+      const videoStream = webcamRef.current.video.srcObject;
       if (videoStream) {
         videoStream.getTracks().forEach((track) => track.stop());
       }
@@ -47,7 +80,7 @@ function Camera() {
             width={550}
             videoConstraints={videoConstraints}
             onUserMediaError={(error) => console.log("Webcam error: ", error)}
-            ref={setWebcamRef}
+            ref={webcamRef}
           />
           <div className="flex gap-5 mx-auto">
             <IoMdCloseCircle size={"40px"} onClick={stopCamera} />
