@@ -1,25 +1,25 @@
-function musicBar() {
+function MusicBar({ title, artist, time, image, path }) {
   return (
-    <div className="relative group w-full flex flex-row justify-between h-10 mb-4 transform hover:scale-105 transition-transform">
-      <div className="w-[50%] flex flex-row">
-        <div className="w-[50%] md:w-[20%]">
+    <div className="relative group w-full flex flex-row justify-between h-20 mb-4 transform hover:scale-105 transition-transform">
+      <div className="w-1/2 h-full flex flex-row gap-2 ">
+        <div className="w-1/3 h-full ">
           <img
-            src="/toyotalogo.png"
-            alt="Toyota Logo"
-            // className="w-[150px] h-[70px] md:w-[200px] md:h-[100px]"
+            src={image}
+            alt="song img"
+            className="object-cover w-full h-full"
           />
         </div>
 
-        <div className="font-light flex flex-col items-start mt-3 md:mt-2">
-          <p className="text-[0.75rem] md:text-[1rem]">Just a music</p>
-          <p className="text-[0.5rem] md:text-[0.75rem]">Artist</p>
+        <div className="flex flex-col justify-center">
+          <p className="text-sm md:text-base font-light">{title}</p>
+          <p className="text-xs md:text-sm font-light">{artist}</p>
         </div>
       </div>
-      <div className="mt-2 font-light">
-        <p className="text-[0.75rem] md:text-[1rem]">3:45</p>
+      <div className="flex items-center font-light">
+        <p className="text-sm md:text-base">{time}</p>
       </div>
     </div>
   );
 }
 
-export default musicBar;
+export default MusicBar;

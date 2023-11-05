@@ -9,7 +9,7 @@ export default function Home() {
       <div className="flex justify-center items-center flex-grow">
         <Playlist />
       </div>
-      <footer className="flex flex-col h-[12vh] w-full bottom-0 absolute left-0 justify-center items-center bg-green-500">
+      <footer className="flex flex-col h-[12vh] w-full bottom-0 absolute left-0 justify-center items-center bg-tyt_bg">
         <Playbar />
       </footer>
     </main>
