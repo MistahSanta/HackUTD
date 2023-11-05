@@ -1,20 +1,23 @@
-import Image from "next/image";
 import Header from "./components/header";
 import Playlist from "./components/Playlist";
 import Playbar from "./components/Playbar";
 import Camera from "./components/Camera";
+import { Ubuntu } from "next/font/google";
+const inter = Ubuntu({ subsets: ["latin"], weight: "400" });
 
 export default function Home() {
   return (
-    <div className="flex flex-col h-screen">
-      <Header />
-      <div className="flex flex-col gap-4 flex-grow justify-center items-center mt-[2em]">
-        <Camera />
-        <Playlist />
-      </div>
-      <footer className="flex h-12 justify-center items-center bg-tyt_bg">
-        <Playbar />
-      </footer>
-    </div>
+    <main className={inter.className}>
+      <main className=" h-[100vh] flex flex-col justify-center">
+        <Header />
+        <div className="flex flex-col justify-center items-center flex-grow ">
+          <Camera />
+          <div className="bg-tyt_bg w-[80vw] h-[100vw] md:w-[65vw] md:h-[60vh] no-scrollbar rounded-xl shadow-lg ">
+            <Playlist />
+            <Playbar />
+          </div>
+        </div>
+      </main>
+    </main>
   );
 }

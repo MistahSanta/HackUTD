@@ -1,6 +1,9 @@
 function MusicBar({ title, artist, time, image, path }) {
   return (
-    <div className="relative group w-full flex flex-row justify-between h-20 mb-4 transform hover:scale-105 transition-transform">
+    <div 
+      className="relative group w-full flex flex-row justify-between h-20 mb-4 transform hover:bg-slate-300 hover:scale-105 transition-transform hover:cursor-pointer"
+      
+    >
       <div className="w-1/2 h-full flex flex-row gap-2 ">
         <div className="w-1/3 h-full ">
           <img
